@@ -24,8 +24,8 @@ insert into @T    values('0022', 1)
 
 UPDATE @IDR
 set JsonMapping = JSON_MODIFY(
-	--modifico per ogni dettaglio
-	JSON_MODIFY(JsonMapping, '$.Details'          , JSON_QUERY((Select 
+	--modifico il codice per ogni dettaglio
+	JSON_MODIFY(JsonMapping, '$.Dettagli'          , JSON_QUERY((Select 
 								 															 CONCAT('[', STRING_AGG(JSON_MODIFY(
 																															JSON_MODIFY([value], '$.Codice', @codPurchaseReason				 )
 																																					 , '$.IVA'   , IIF(tbpr.Consistent = 1, 
