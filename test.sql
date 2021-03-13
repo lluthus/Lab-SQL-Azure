@@ -26,18 +26,18 @@ UPDATE @IDR
 set jsonfield = 
 	JSON_MODIFY(
 		--modifico il codice per ogni dettaglio
-		JSON_MODIFY(jsonfield, '$.Dettagli', JSON_QUERY((Select CONCAT('[', STRING_AGG(JSON_MODIFY(
-											JSON_MODIFY([value], '$.Codice', @c)
-											 , '$.Tax'   , IIF(tbpr.Consistent = 1, 
-											 		   JSON_VALUE([value], '$.Tax'),
-													   '')										  )                
-							 		, ',') WITHIN GROUP (ORDER BY CAST([key] AS int)), ']')
+		JSON_MODIFY(jsonfield, '$.Dettagli', JSON_QUERY((Select CONCAT('[', 
+										   STRING_AGG(
+											JSON_MODIFY(
+										       		JSON_MODIFY([value], '$.Codice', @c)
+											, '$.Tax', IIF(tbpr.Consistent = 1, JSON_VALUE([value], '$.Tax'), ''))                
+							 		       	   , ',') WITHIN GROUP (ORDER BY CAST([key] AS int)),
+										']')
 								   From  
 								   	OPENJSON(jsonfield, '$.Dettagli') detail
 								   Left Join
 									@T  tbpr on tbpr.Tax = JSON_VALUE(detail.[value], '$.Tax')))
 		)
-	--modifico la causale di testata
 	, '$.Codice', @c)
 From
 	 @IDR 
