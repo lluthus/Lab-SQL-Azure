@@ -17,7 +17,7 @@ set jsonfield =
 		JSON_MODIFY(jsonfield, '$.Dettagli', JSON_QUERY((Select CONCAT('[', 
                                                                      STRING_AGG(JSON_MODIFY([value], '$.Codice', @c), ',') WITHIN GROUP (ORDER BY CAST([key] AS int))
                                                                      , ']')
-								                               From OPENJSON(jsonfield, '$.Dettagli') detail))
+								 From OPENJSON(jsonfield, '$.Dettagli') detail))
 		)
 From
 	 @IDR 
