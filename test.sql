@@ -1,8 +1,8 @@
 -- primo file sql Gittato da Azure Data Studio (mi ha fatto penare, ma ci stà)
 
 DECLARE
-   @id                  int = 101,
-	@c   varchar(1) = 'V'
+   @id int = 101,
+   @c varchar(1) = 'V';
 
 DECLARE @IDR TABLE (
    Id          INT,
@@ -23,22 +23,22 @@ DECLARE @T table(
 insert into @T    values('0022', 1)
 
 UPDATE @IDR
-set jsonfield = JSON_MODIFY(
-	--modifico il codice per ogni dettaglio
-	JSON_MODIFY(jsonfield, '$.Dettagli'          , JSON_QUERY((Select 
-								 															 CONCAT('[', STRING_AGG(JSON_MODIFY(
-																															JSON_MODIFY([value], '$.Codice', @c				 )
-																																					 , '$.Tax'   , IIF(tbpr.Consistent = 1, 
-																																											 JSON_VALUE([value], '$.Tax'),
-																																															'')										  )                
-								 						 												 				  , ',') WITHIN GROUP (ORDER BY CAST([key] AS int)), ']')
-								 									            From  
-																						OPENJSON(jsonfield, '$.Dettagli') detail
-																					Left Join
-																						@T			  tbpr on tbpr.Tax = JSON_VALUE(detail.[value], '$.Tax')
-																					)))
+set jsonfield = 
+	JSON_MODIFY(
+		--modifico il codice per ogni dettaglio
+		JSON_MODIFY(jsonfield, '$.Dettagli', JSON_QUERY((Select CONCAT('[', STRING_AGG(JSON_MODIFY(
+											JSON_MODIFY([value], '$.Codice', @c)
+											 , '$.Tax'   , IIF(tbpr.Consistent = 1, 
+											 		   JSON_VALUE([value], '$.Tax'),
+													   '')										  )                
+							 		, ',') WITHIN GROUP (ORDER BY CAST([key] AS int)), ']')
+								   From  
+								   	OPENJSON(jsonfield, '$.Dettagli') detail
+								   Left Join
+									@T  tbpr on tbpr.Tax = JSON_VALUE(detail.[value], '$.Tax')))
+		)
 	--modifico la causale di testata
-								  , '$.Codice', @c)
+	, '$.Codice', @c)
 From
 	 @IDR 
 Where
