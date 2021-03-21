@@ -1,0 +1,7 @@
+CREATE LOGIN Anton WITH PASSWORD = 'ThisIsASeriousPassword@1234567890'
+
+CREATE USER Anton
+
+GRANT SELECT ON Waterfalls TO Anton
+
+GRANT SELECT TO Anton

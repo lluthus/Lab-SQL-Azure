@@ -1,0 +1,1 @@
+CREATE TABLE Countries ( CountryName varchar(max) )
